@@ -2,14 +2,23 @@ package com.predictice.music.data.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Document(indexName = "album")
 public class AlbumDoc {
     @Id
     private String id;
+    @Field(type = FieldType.Keyword, name = "title")
     private String title;
+    @Field(type = FieldType.Keyword, name = "artist")
+
     private String artist;
+    @Field(type = FieldType.Keyword, name = "releaseYear")
+
     private String releaseYear;
+    @Field(type = FieldType.Keyword, name = "coverURL")
+
     private String coverURL;
 
     public AlbumDoc(String id, String title, String artist, String releaseYear, String coverURL) {

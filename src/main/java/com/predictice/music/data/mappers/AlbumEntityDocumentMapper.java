@@ -3,7 +3,9 @@ package com.predictice.music.data.mappers;
 import com.predictice.music.data.models.AlbumDoc;
 import com.predictice.music.domain.entities.Album;
 import com.predictice.music.domain.mapper.ModelEntityMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AlbumEntityDocumentMapper implements ModelEntityMapper<Album, AlbumDoc> {
     @Override
     public Album toEntity(AlbumDoc albumDoc) {
