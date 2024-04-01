@@ -1,28 +1,39 @@
 package com.predictice.music.presenter.endpoints;
 
 import com.predictice.music.domain.models.Album;
-import com.predictice.music.domain.usecases.FindAlbumById;
-import com.predictice.music.presenter.mappers.AlbumModelEntityMapper;
-import com.predictice.music.presenter.models.response.AlbumResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.predictice.music.domain.services.AlbumService;
+import com.predictice.music.presenter.mappers.AlbumEntityResponseMapper;
+import com.predictice.music.presenter.models.AlbumResponse;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("albums")
 public class AlbumController {
-    private final FindAlbumById findAlbumById;
-    private final AlbumModelEntityMapper mapper;
+    private final AlbumService albumService;
+    private final AlbumEntityResponseMapper mapper;
 
-    public AlbumController(FindAlbumById findAlbumById, AlbumModelEntityMapper mapper) {
-        this.findAlbumById = findAlbumById;
+    public AlbumController(AlbumService albumService, AlbumEntityResponseMapper mapper) {
+        this.albumService = albumService;
         this.mapper = mapper;
     }
 
     @GetMapping("/{id}")
     public AlbumResponse getAlbum(@PathVariable String id) {
-        Album album = findAlbumById.execute(id);
+        Album album = albumService.getAlbumById(id);
         return mapper.toModel(album);
+    }
+
+
+    @GetMapping("/search")
+    public List<AlbumResponse> searchAlbumsByReleaseYearAndKeyword(
+            @RequestParam(name = "releaseYear") String releaseYear,
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        List<Album> albums = albumService.filterAlbumsByReleaseYearAndKeyword(releaseYear, keyword, page, size);
+        return mapper.listOfEntitiesToModels(albums);
     }
 }

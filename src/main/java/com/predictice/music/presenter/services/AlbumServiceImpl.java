@@ -5,10 +5,13 @@ import com.predictice.music.infrastructure.persistence.elasticsearch.models.Albu
 import com.predictice.music.infrastructure.persistence.elasticsearch.repository.AlbumRepository;
 import com.predictice.music.domain.models.Album;
 import com.predictice.music.domain.services.AlbumService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
@@ -28,10 +31,9 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public List<Album> findAlbum() {
-        var albums = new ArrayList<AlbumDoc>();
-        albumRepository.findAll().forEach(albums::add);
-        return mapper.listOfModelsToEntities(albums);
+    public List<Album> filterAlbumsByReleaseYearAndKeyword(String releaseYear, String keyword, int page, int size) {
+        var albums = albumRepository.searchAlbumsByReleaseYearAndKeyword(releaseYear, keyword, PageRequest.of(page, size));
+        return mapper.listOfModelsToEntities(albums.toList());
     }
 
     @Override
@@ -42,5 +44,10 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public void deleteAlbumIndexById(String id) {
         albumRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Map<String, Integer>> countAlbumsByReleaseYear() {
+        return albumRepository.countAlbumsByReleaseYear();
     }
 }
