@@ -1,12 +1,14 @@
 package com.predictice.music.presenter.services;
 
 import com.predictice.music.infrastructure.persistence.elasticsearch.mappers.AlbumEntityDocumentMapper;
+import com.predictice.music.infrastructure.persistence.elasticsearch.models.AlbumDoc;
 import com.predictice.music.infrastructure.persistence.elasticsearch.repository.AlbumRepository;
 import com.predictice.music.domain.models.Album;
 import com.predictice.music.domain.services.AlbumService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +27,13 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public Album getAlbumById(String id) {
         return mapper.toEntity(albumRepository.findById(id).orElseThrow());
+    }
+
+    @Override
+    public List<Album> getAllAlbum() {
+        List<AlbumDoc> listOfAlbums = new ArrayList<>();
+        albumRepository.findAll().forEach(listOfAlbums::add);
+        return mapper.listOfModelsToEntities(listOfAlbums);
     }
 
     @Override

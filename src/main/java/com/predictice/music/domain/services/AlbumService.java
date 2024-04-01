@@ -8,6 +8,8 @@ import java.util.Map;
 public interface AlbumService {
     public Album getAlbumById(String id);
 
+    public List<Album> getAllAlbum();
+
     public List<Album> filterAlbumsByReleaseYearAndKeyword(String releaseYear, String keyword, int page, int size);
 
     public void createAlbumIndex(Album album);

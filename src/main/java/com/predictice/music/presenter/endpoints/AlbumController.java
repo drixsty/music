@@ -19,6 +19,12 @@ public class AlbumController {
         this.mapper = mapper;
     }
 
+    @GetMapping()
+    public List<AlbumResponse> getAllAlbums() {
+        var albums = albumService.getAllAlbum();
+        return mapper.listOfEntitiesToModels(albums);
+    }
+
     @GetMapping("/{id}")
     public AlbumResponse getAlbum(@PathVariable String id) {
         Album album = albumService.getAlbumById(id);
