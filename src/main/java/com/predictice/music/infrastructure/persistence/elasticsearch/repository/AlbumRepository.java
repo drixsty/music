@@ -1,6 +1,6 @@
-package com.predictice.music.data.repository;
+package com.predictice.music.infrastructure.persistence.elasticsearch.repository;
 
-import com.predictice.music.data.models.AlbumDoc;
+import com.predictice.music.infrastructure.persistence.elasticsearch.models.AlbumDoc;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;

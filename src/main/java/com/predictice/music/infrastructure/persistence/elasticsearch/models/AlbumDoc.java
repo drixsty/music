@@ -1,4 +1,4 @@
-package com.predictice.music.data.models;
+package com.predictice.music.infrastructure.persistence.elasticsearch.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

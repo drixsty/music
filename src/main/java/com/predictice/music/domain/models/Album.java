@@ -1,4 +1,4 @@
-package com.predictice.music.domain.entities;
+package com.predictice.music.domain.models;
 
 public class Album {
     private final String id;

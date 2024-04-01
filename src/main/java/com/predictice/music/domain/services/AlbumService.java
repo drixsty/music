@@ -1,6 +1,6 @@
 package com.predictice.music.domain.services;
 
-import com.predictice.music.domain.entities.Album;
+import com.predictice.music.domain.models.Album;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ public interface AlbumService {
 
     public List<Album> findAlbum();
 
-    public void createAlbumIndex(final Album album);
+    public void createAlbumIndex(Album album);
 
-    public void deleteAlbumIndex(final Album album);
+    public void deleteAlbumIndexById(String id);
 
 }
