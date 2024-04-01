@@ -4,6 +4,8 @@ import com.predictice.music.domain.models.Album;
 import com.predictice.music.domain.services.AlbumService;
 import com.predictice.music.presenter.mappers.AlbumEntityResponseMapper;
 import com.predictice.music.presenter.models.AlbumResponse;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,10 +38,9 @@ public class AlbumController {
     public List<AlbumResponse> searchAlbumsByReleaseYearAndKeyword(
             @RequestParam(name = "releaseYear") String releaseYear,
             @RequestParam(name = "keyword") String keyword,
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size
+            @ParameterObject Pageable pageable
     ) {
-        List<Album> albums = albumService.filterAlbumsByReleaseYearAndKeyword(releaseYear, keyword, page, size);
+        List<Album> albums = albumService.filterAlbumsByReleaseYearAndKeyword(releaseYear, keyword, pageable);
         return mapper.listOfEntitiesToModels(albums);
     }
 }

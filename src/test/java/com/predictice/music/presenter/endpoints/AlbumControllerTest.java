@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -53,15 +55,15 @@ class AlbumControllerTest {
         Album album = Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
         AlbumResponse albumResponse = new AlbumResponse("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
 
-        when(albumService.filterAlbumsByReleaseYearAndKeyword("1982", "Thriller", 0, 10)).thenReturn(Collections.singletonList(album));
+        when(albumService.filterAlbumsByReleaseYearAndKeyword("1982", "Thriller", PageRequest.of(1, 1))).thenReturn(Collections.singletonList(album));
 
         when(mapper.listOfEntitiesToModels(Collections.singletonList(album))).thenReturn(Collections.singletonList(albumResponse));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/albums/search")
                         .param("releaseYear", "1982")
                         .param("keyword", "Thriller")
-                        .param("page", "0")
-                        .param("size", "10"))
+                        .param("page", "1")
+                        .param("size", "1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Thriller"))

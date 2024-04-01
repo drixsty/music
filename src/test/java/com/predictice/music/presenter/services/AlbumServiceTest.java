@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,13 +50,13 @@ class AlbumServiceTest {
         List<AlbumDoc> albumDocs = Collections.singletonList(
                 new AlbumDoc("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
         Page<AlbumDoc> albumPage = new PageImpl<>(albumDocs);
-        when(albumRepository.searchAlbumsByReleaseYearAndKeyword("1982", "Thriller", PageRequest.of(0, 10))).thenReturn(albumPage);
+        when(albumRepository.searchAlbumsByReleaseYearAndKeyword("1982", "Thriller", PageRequest.of(1, 1))).thenReturn(albumPage);
 
         List<Album> albums = Collections.singletonList(
                  Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
         when(mapper.listOfModelsToEntities(albumDocs)).thenReturn(albums);
 
-        List<Album> result = albumService.filterAlbumsByReleaseYearAndKeyword("1982", "Thriller", 0, 10);
+        List<Album> result = albumService.filterAlbumsByReleaseYearAndKeyword("1982", "Thriller", PageRequest.of(1, 1));
 
         assertEquals(albums, result);
     }
