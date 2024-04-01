@@ -6,10 +6,9 @@ import com.predictice.music.infrastructure.persistence.elasticsearch.repository.
 import com.predictice.music.domain.models.Album;
 import com.predictice.music.domain.services.AlbumService;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,11 +31,9 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public List<Album> getAllAlbum() {
-       /* List<AlbumDoc> listOfAlbums = new ArrayList<>();
+        List<AlbumDoc> listOfAlbums = new ArrayList<>();
         albumRepository.findAll().forEach(listOfAlbums::add);
         return mapper.listOfModelsToEntities(listOfAlbums);
-        */
-        return mapper.listOfModelsToEntities(albumRepository.searchAlbumsByKeyword("","", Pageable.ofSize(10)).stream().toList());
     }
 
     @Override
@@ -57,6 +54,21 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public List<Map<String, Integer>> countAlbumsByReleaseYear() {
-        return albumRepository.countAlbumsByReleaseYear();
+        List<Map<String, Integer>> response = new ArrayList<>();
+
+        var result = albumRepository.findAll();
+
+        Map<String, Long> countByYear = new HashMap<>();
+        result.iterator().forEachRemaining(albumDoc ->
+                countByYear.merge(albumDoc.getReleaseYear(), 1L, Long::sum)
+        );
+
+        countByYear.forEach((releaseYear, count) -> {
+            Map<String, Integer> map = new HashMap<>();
+            map.put(releaseYear, count.intValue());
+            response.add(map);
+        });
+
+        return response;
     }
 }
