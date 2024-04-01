@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ReleaseYearControllerTest {
+ class ReleaseYearControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -26,10 +26,10 @@ public class ReleaseYearControllerTest {
     @MockBean
     private AlbumService albumService;
 
-    /*
+
     @Test
     void testGetReleaseYear() throws Exception {
-        List<Map<String, Long>> counts = Collections.singletonList(Collections.singletonMap("1982", 5));
+        List<Map<String, Integer>> counts = Collections.singletonList(Collections.singletonMap("1982", 5));
 
         when(albumService.countAlbumsByReleaseYear()).thenReturn(counts);
 
@@ -38,5 +38,5 @@ public class ReleaseYearControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].1982").value(5));
     }
 
-     */
+
 }

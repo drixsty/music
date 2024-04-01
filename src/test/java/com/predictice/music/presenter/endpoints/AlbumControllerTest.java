@@ -39,7 +39,6 @@ class AlbumControllerTest {
 
         when(mapper.toModel(album)).thenReturn(albumResponse);
 
-        // Effectuer la requête HTTP simulée
         mockMvc.perform(MockMvcRequestBuilders.get("/albums/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"))

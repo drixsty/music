@@ -65,6 +65,11 @@ class AlbumServiceTest {
         Album album =  Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
         AlbumDoc albumDoc = new AlbumDoc("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
 
+       when(albumRepository.save(any())).thenReturn(albumDoc);
+
+       when(mapper.toModel(any())).thenReturn(albumDoc);
+
+
         albumService.createAlbumIndex(album);
 
         verify(albumRepository, times(1)).save(albumDoc);
@@ -77,17 +82,20 @@ class AlbumServiceTest {
         verify(albumRepository, times(1)).deleteById("1");
     }
 
-    /*
+
     @Test
     void testCountAlbumsByReleaseYear() {
-        List<Map<String, Long>> counts = Collections.singletonList(
-                Collections.singletonMap("1982", 5));
-        when(albumRepository.countAlbumsByReleaseYear()).thenReturn(counts);
+        List<AlbumDoc> albumDocs = Collections.singletonList(
+                new AlbumDoc("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
 
-        List<Map<String, Long>> result = albumService.countAlbumsByReleaseYear();
+        List<Map<String, Integer>> counts = Collections.singletonList(
+                Collections.singletonMap("1982", 1));
+        when(albumRepository.findAll()).thenReturn(albumDocs);
+
+        List<Map<String, Integer>> result = albumService.countAlbumsByReleaseYear();
 
         assertEquals(counts, result);
     }
 
-     */
+
 }
