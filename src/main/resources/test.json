@@ -1,0 +1,10 @@
+{
+  "size": 0,
+  "aggs": {
+    "album_count_by_release_year": {
+      "terms": {
+        "field": "releaseYear.keyword"
+      }
+    }
+  }
+}

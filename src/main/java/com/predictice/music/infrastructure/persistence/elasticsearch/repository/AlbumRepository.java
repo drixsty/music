@@ -15,9 +15,12 @@ public interface AlbumRepository extends ElasticsearchRepository<AlbumDoc, Strin
     Page<AlbumDoc> findByReleaseYear(String releaseYear, Pageable pageable);
 
     @Query("{\"bool\": {\"must\": [{\"match\": {\"releaseYear\": \"?0\"}}, {\"multi_match\": {\"query\": \"?1\", \"fields\": [\"title\", \"artist\", \"coverURL\"]}}]}}")
+    Page<AlbumDoc> searchAlbumsByKeyword(String releaseYear,String keyword, Pageable pageable);
+
+    @Query("{\"bool\": {\"must\": [{\"match\": {\"releaseYear\": \"?0\"}}, {\"multi_match\": {\"query\": \"?1\", \"fields\": [\"title\", \"artist\", \"coverURL\"]}}]}}")
     Page<AlbumDoc> searchAlbumsByReleaseYearAndKeyword(String releaseYear, String keyword, Pageable pageable);
 
-    @Query("{\"aggs\": {\"album_count_by_release_year\": {\"terms\": {\"field\": \"releaseYear.keyword\"}}}}")
+    @Query("{\"size\": 0, \"aggs\": {\"album_count_by_release_year\": {\"terms\": {\"field\": \"releaseYear.keyword\"}}}}")
     List<Map<String, Integer>> countAlbumsByReleaseYear();
 
 }
