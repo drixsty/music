@@ -1,15 +1,12 @@
 package com.predictice.music.presenter.services;
 
 import com.predictice.music.infrastructure.persistence.elasticsearch.mappers.AlbumEntityDocumentMapper;
-import com.predictice.music.infrastructure.persistence.elasticsearch.models.AlbumDoc;
 import com.predictice.music.infrastructure.persistence.elasticsearch.repository.AlbumRepository;
 import com.predictice.music.domain.models.Album;
 import com.predictice.music.domain.services.AlbumService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
