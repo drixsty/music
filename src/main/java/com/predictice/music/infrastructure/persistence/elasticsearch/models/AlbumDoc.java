@@ -21,6 +21,10 @@ public class AlbumDoc {
 
     private String coverURL;
 
+    public AlbumDoc() {
+    }
+
+
     public AlbumDoc(String id, String title, String artist, String releaseYear, String coverURL) {
         this.id = id;
         this.title = title;

@@ -29,7 +29,7 @@ public class AlbumController {
 
     @GetMapping("/{id}")
     public AlbumResponse getAlbum(@PathVariable String id) {
-        Album album = albumService.getAlbumById(id);
+        var album = albumService.getAlbumById(id);
         return mapper.toModel(album);
     }
 
@@ -40,7 +40,7 @@ public class AlbumController {
             @RequestParam(name = "keyword") String keyword,
             @ParameterObject Pageable pageable
     ) {
-        List<Album> albums = albumService.filterAlbumsByReleaseYearAndKeyword(releaseYear, keyword, pageable);
+        var albums = albumService.filterAlbumsByReleaseYearAndKeyword(releaseYear, keyword, pageable);
         return mapper.listOfEntitiesToModels(albums);
     }
 }

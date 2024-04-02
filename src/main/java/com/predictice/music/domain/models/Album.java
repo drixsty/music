@@ -17,13 +17,8 @@ public class Album {
 
     public static Album create(String id, String title, String artist, String releaseYear, String coverURL) {
 
-        if (title == null || title.isEmpty()) throw new IllegalArgumentException("Title cannot be null or empty");
 
         if (artist == null || artist.isEmpty()) throw new IllegalArgumentException("Artist cannot be null or empty");
-
-        if (releaseYear == null || releaseYear.isEmpty())
-            throw new IllegalArgumentException("Release year cannot be null or empty");
-
 
         return new Album(id, title, artist, releaseYear, coverURL);
     }
