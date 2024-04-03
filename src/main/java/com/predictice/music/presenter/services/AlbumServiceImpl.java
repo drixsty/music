@@ -1,7 +1,6 @@
 package com.predictice.music.presenter.services;
 
 import com.predictice.music.infrastructure.persistence.elasticsearch.mappers.AlbumEntityDocumentMapper;
-import com.predictice.music.infrastructure.persistence.elasticsearch.models.AlbumDoc;
 import com.predictice.music.infrastructure.persistence.elasticsearch.repository.AlbumRepository;
 import com.predictice.music.domain.models.Album;
 import com.predictice.music.domain.services.AlbumService;
@@ -30,10 +29,9 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public List<Album> getAllAlbum() {
-        List<AlbumDoc> listOfAlbums = new ArrayList<>();
-        albumRepository.findAll().forEach(listOfAlbums::add);
-        return mapper.listOfModelsToEntities(listOfAlbums);
+    public List<Album> getAllAlbum(Pageable pageable) {
+        var albums = albumRepository.findAll(pageable);
+        return mapper.listOfModelsToEntities(albums.toList());
     }
 
     @Override

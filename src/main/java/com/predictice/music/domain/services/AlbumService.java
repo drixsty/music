@@ -9,7 +9,7 @@ import java.util.Map;
 public interface AlbumService {
     public Album getAlbumById(String id);
 
-    public List<Album> getAllAlbum();
+    public List<Album> getAllAlbum(Pageable pageable);
 
     public List<Album> filterAlbumsByReleaseYearAndKeyword(String releaseYear, String keyword, Pageable pageable);
 

@@ -51,6 +51,26 @@ class AlbumControllerTest {
     }
 
     @Test
+    void testSearchAllAlbums() throws Exception {
+        Album album = Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
+        AlbumResponse albumResponse = new AlbumResponse("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
+
+        when(albumService.getAllAlbum(PageRequest.of(1, 1))).thenReturn(Collections.singletonList(album));
+
+        when(mapper.listOfEntitiesToModels(Collections.singletonList(album))).thenReturn(Collections.singletonList(albumResponse));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/albums")
+                        .param("page", "1")
+                        .param("size", "1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Thriller"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].artist").value("Michael Jackson"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].releaseYear").value("1982"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].coverURL").value("https://example.com/thriller-cover.jpg"));
+    }
+
+    @Test
     void testSearchAlbumsByReleaseYearAndKeyword() throws Exception {
         Album album = Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
         AlbumResponse albumResponse = new AlbumResponse("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");

@@ -1,6 +1,5 @@
 package com.predictice.music.presenter.endpoints;
 
-import com.predictice.music.domain.models.Album;
 import com.predictice.music.domain.services.AlbumService;
 import com.predictice.music.presenter.mappers.AlbumEntityResponseMapper;
 import com.predictice.music.presenter.models.AlbumResponse;
@@ -22,8 +21,8 @@ public class AlbumController {
     }
 
     @GetMapping()
-    public List<AlbumResponse> getAllAlbums() {
-        var albums = albumService.getAllAlbum();
+    public List<AlbumResponse> getAllAlbums(@ParameterObject Pageable pageable) {
+        var albums = albumService.getAllAlbum(pageable);
         return mapper.listOfEntitiesToModels(albums);
     }
 
