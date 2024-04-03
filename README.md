@@ -22,7 +22,7 @@ Pour démarrer l'application, assurez-vous d'avoir Docker et Docker Compose inst
 1. Clonez ce dépôt Git.
 2. Accédez au répertoire du projet.
 3. Exécutez la commande suivante pour construire et démarrer les conteneurs Docker : 
-```bash docker-compose up --build```
+```docker-compose up --build```
 
 L'application sera accessible à l'adresse : `http://localhost:8080`.
 
