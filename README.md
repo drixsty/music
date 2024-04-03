@@ -50,8 +50,8 @@ Elle permet de tester les API REST exposées par l'application.
 
 ## Auteur
 
-kevin TSAGUE
-Fullstack developper
+kevin TSAGUE  
+_Fullstack developper_
 
 
 
