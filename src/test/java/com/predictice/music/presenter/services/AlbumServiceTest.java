@@ -44,36 +44,41 @@ class AlbumServiceTest {
         assertEquals(album, result);
     }
 
+
+
     @Test
     void testGetAllAlbums() {
         List<AlbumDoc> albumDocs = Collections.singletonList(
                 new AlbumDoc("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
-        Page<AlbumDoc> albumPage = new PageImpl<>(albumDocs);
-        when(albumRepository.findAll(PageRequest.of(1, 1))).thenReturn(albumPage);
+        Page<AlbumDoc> albumDocPage = new PageImpl<>(albumDocs);
+        when(albumRepository.findAll(PageRequest.of(1, 1))).thenReturn(albumDocPage);
 
-        List<Album> albums = Collections.singletonList(
-                Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
-        when(mapper.listOfModelsToEntities(albumDocs)).thenReturn(albums);
+        Album singleAlbum = Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
+        Page<Album> albumPage = new PageImpl<>(Collections.singletonList(singleAlbum));
 
-        List<Album> result = albumService.getAllAlbum(PageRequest.of(1, 1));
+        when(mapper.toEntity(any())).thenReturn(singleAlbum);
 
-        assertEquals(albums, result);
+        Page<Album> result = albumService.getAllAlbum(PageRequest.of(1, 1));
+
+        assertEquals(albumPage, result);
     }
+
 
     @Test
     void testFilterAlbumsByReleaseYearAndKeyword() {
         List<AlbumDoc> albumDocs = Collections.singletonList(
                 new AlbumDoc("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
-        Page<AlbumDoc> albumPage = new PageImpl<>(albumDocs);
-        when(albumRepository.searchAlbumsByReleaseYearAndKeyword("1982", "Thriller", PageRequest.of(1, 1))).thenReturn(albumPage);
+        Page<AlbumDoc> albumDocPage = new PageImpl<>(albumDocs);
+        when(albumRepository.searchAlbumsByReleaseYearAndKeyword("1982","Thriller",PageRequest.of(1, 1))).thenReturn(albumDocPage);
 
-        List<Album> albums = Collections.singletonList(
-                 Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
-        when(mapper.listOfModelsToEntities(albumDocs)).thenReturn(albums);
+        Album singleAlbum = Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
+        Page<Album> albumPage = new PageImpl<>(Collections.singletonList(singleAlbum));
 
-        List<Album> result = albumService.filterAlbumsByReleaseYearAndKeyword("1982", "Thriller", PageRequest.of(1, 1));
+        when(mapper.toEntity(any())).thenReturn(singleAlbum);
 
-        assertEquals(albums, result);
+        Page<Album> result = albumService.filterAlbumsByReleaseYearAndKeyword("1982", "Thriller", PageRequest.of(1, 1));
+
+        assertEquals(albumPage, result);
     }
 
     @Test

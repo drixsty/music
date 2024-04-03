@@ -4,6 +4,7 @@ import com.predictice.music.domain.services.AlbumService;
 import com.predictice.music.presenter.mappers.AlbumEntityResponseMapper;
 import com.predictice.music.presenter.models.AlbumResponse;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,9 @@ public class AlbumController {
     }
 
     @GetMapping()
-    public List<AlbumResponse> getAllAlbums(@ParameterObject Pageable pageable) {
+    public Page<AlbumResponse> getAllAlbums(@ParameterObject Pageable pageable) {
         var albums = albumService.getAllAlbum(pageable);
-        return mapper.listOfEntitiesToModels(albums);
+        return albums.map(mapper::toModel);
     }
 
     @GetMapping("/{id}")
@@ -34,12 +35,12 @@ public class AlbumController {
 
 
     @GetMapping("/search")
-    public List<AlbumResponse> searchAlbumsByReleaseYearAndKeyword(
+    public Page<AlbumResponse> searchAlbumsByReleaseYearAndKeyword(
             @RequestParam(name = "releaseYear") String releaseYear,
             @RequestParam(name = "keyword") String keyword,
             @ParameterObject Pageable pageable
     ) {
         var albums = albumService.filterAlbumsByReleaseYearAndKeyword(releaseYear, keyword, pageable);
-        return mapper.listOfEntitiesToModels(albums);
+        return albums.map(mapper::toModel);
     }
 }

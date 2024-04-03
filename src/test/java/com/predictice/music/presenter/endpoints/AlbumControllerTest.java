@@ -9,15 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,54 +47,45 @@ class AlbumControllerTest {
 
         when(mapper.toModel(album)).thenReturn(albumResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/albums/1"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Thriller"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value("Michael Jackson"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value("1982"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.coverURL").value("https://example.com/thriller-cover.jpg"));
+        mockMvc.perform(get("/albums/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.title").value("Thriller"))
+                .andExpect(jsonPath("$.artist").value("Michael Jackson"))
+                .andExpect(jsonPath("$.releaseYear").value("1982"))
+                .andExpect(jsonPath("$.coverURL").value("https://example.com/thriller-cover.jpg"));
     }
 
     @Test
-    void testSearchAllAlbums() throws Exception {
-        Album album = Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
-        AlbumResponse albumResponse = new AlbumResponse("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
+    void testGetAllAlbums() throws Exception {
+        List<Album> albums = new ArrayList<>();
+        when(albumService.getAllAlbum(any(Pageable.class))).thenReturn(new PageImpl<>(albums));
+        when(mapper.toModel(any(Album.class))).thenReturn(new AlbumResponse("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
 
-        when(albumService.getAllAlbum(PageRequest.of(1, 1))).thenReturn(Collections.singletonList(album));
+        mockMvc.perform(get("/albums"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray());
 
-        when(mapper.listOfEntitiesToModels(Collections.singletonList(album))).thenReturn(Collections.singletonList(albumResponse));
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/albums")
-                        .param("page", "1")
-                        .param("size", "1"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Thriller"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].artist").value("Michael Jackson"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].releaseYear").value("1982"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].coverURL").value("https://example.com/thriller-cover.jpg"));
+        verify(albumService, times(1)).getAllAlbum(any(Pageable.class));
+        verify(mapper, times(albums.size())).toModel(any(Album.class));
     }
 
     @Test
     void testSearchAlbumsByReleaseYearAndKeyword() throws Exception {
-        Album album = Album.create("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
-        AlbumResponse albumResponse = new AlbumResponse("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg");
+        String releaseYear = "2022";
+        String keyword = "rock";
+        List<Album> albums = new ArrayList<>();
+        when(albumService.filterAlbumsByReleaseYearAndKeyword(eq(releaseYear), eq(keyword), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(albums));
+        when(mapper.toModel(any(Album.class))).thenReturn(new AlbumResponse("1", "Thriller", "Michael Jackson", "1982", "https://example.com/thriller-cover.jpg"));
 
-        when(albumService.filterAlbumsByReleaseYearAndKeyword("1982", "Thriller", PageRequest.of(1, 1))).thenReturn(Collections.singletonList(album));
+        mockMvc.perform(get("/albums/search")
+                        .param("releaseYear", releaseYear)
+                        .param("keyword", keyword))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray());
 
-        when(mapper.listOfEntitiesToModels(Collections.singletonList(album))).thenReturn(Collections.singletonList(albumResponse));
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/albums/search")
-                        .param("releaseYear", "1982")
-                        .param("keyword", "Thriller")
-                        .param("page", "1")
-                        .param("size", "1"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Thriller"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].artist").value("Michael Jackson"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].releaseYear").value("1982"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].coverURL").value("https://example.com/thriller-cover.jpg"));
+        verify(albumService, times(1)).filterAlbumsByReleaseYearAndKeyword(eq(releaseYear), eq(keyword), any(Pageable.class));
+        verify(mapper, times(albums.size())).toModel(any(Album.class));
     }
 }

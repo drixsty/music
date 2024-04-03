@@ -4,6 +4,7 @@ import com.predictice.music.infrastructure.persistence.elasticsearch.mappers.Alb
 import com.predictice.music.infrastructure.persistence.elasticsearch.repository.AlbumRepository;
 import com.predictice.music.domain.models.Album;
 import com.predictice.music.domain.services.AlbumService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -29,15 +30,16 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public List<Album> getAllAlbum(Pageable pageable) {
+    public Page<Album> getAllAlbum(Pageable pageable) {
         var albums = albumRepository.findAll(pageable);
-        return mapper.listOfModelsToEntities(albums.toList());
+        return albums.map(mapper::toEntity);
+
     }
 
     @Override
-    public List<Album> filterAlbumsByReleaseYearAndKeyword(String releaseYear, String keyword, Pageable pageable) {
+    public Page<Album> filterAlbumsByReleaseYearAndKeyword(String releaseYear, String keyword, Pageable pageable) {
         var albums = albumRepository.searchAlbumsByReleaseYearAndKeyword(releaseYear, keyword, pageable);
-        return mapper.listOfModelsToEntities(albums.toList());
+        return albums.map(mapper::toEntity);
     }
 
     @Override
