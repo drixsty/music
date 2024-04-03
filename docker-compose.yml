@@ -1,9 +1,8 @@
-#docker run -p 9200:9200 -e "discovery.type=single-node"  docker.elastic.co/elasticsearch/elasticsearch:8.13.0
 version: "3"
 services:
-  es:
+  elasticsearch:
     image: elasticsearch:8.13.0
-    container_name: elastic
+    container_name: elasticsearch
     environment:
       - node.name=es01
       - cluster.name=es-cluster
@@ -18,12 +17,39 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - ./es/data:/usr/share/elasticsearch/data:rw
-      - ./es/logs:/usr/share/elasticsearch/logs:rw
+      - esdata:/usr/share/elasticsearch/data:rw
+      - esdata:/usr/share/elasticsearch/logs:rw
     ports:
       - "9200:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail elasticsearch:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
     networks:
       - es-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ELASTIC_HOST=elasticsearch
+    container_name: music-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - es-network
+    volumes:
+      - ./src/main/resources:/app/src/main/resources
+
+volumes:
+  esdata:
+    driver: local
+
 networks:
   es-network:
     driver: bridge

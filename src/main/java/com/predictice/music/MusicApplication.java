@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import java.io.File;
 import java.util.List;
 
 @SpringBootApplication
+@EnableElasticsearchRepositories
 public class MusicApplication implements CommandLineRunner {
     @Value("${music.elasticsearch.init.data.path}")
     private String initDataPath;
@@ -22,6 +24,7 @@ public class MusicApplication implements CommandLineRunner {
     public MusicApplication(AlbumRepository albumRepository) {
         this.albumRepository = albumRepository;
     }
+
 
     @Override
     public void run(String... args) throws Exception {
