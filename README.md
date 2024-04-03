@@ -26,6 +26,10 @@ Pour démarrer l'application, assurez-vous d'avoir Docker et Docker Compose inst
 
 L'application sera accessible à l'adresse : `http://localhost:8080`.
 
+Lors du démarrage, un jeu de données stocké dans `resources/albums_sample.json` est automatiquement chargé à l'aide la ligne de configuration ci-dessous :
+`music.elasticsearch.init.data.path=src/main/resources/albums_sample.json` definit dans le fichier `application.properties`.
+
+
 ## Interagir avec les endpoints
 
 L'application expose plusieurs endpoints pour interagir avec les données des albums :
