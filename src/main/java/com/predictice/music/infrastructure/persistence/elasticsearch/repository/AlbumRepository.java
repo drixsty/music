@@ -14,10 +14,7 @@ import java.util.Map;
 public interface AlbumRepository extends ElasticsearchRepository<AlbumDoc, String> {
     Page<AlbumDoc> findByReleaseYear(String releaseYear, Pageable pageable);
 
-    @Query("{\"bool\": {\"must\": [{\"match\": {\"releaseYear\": \"?0\"}}, {\"multi_match\": {\"query\": \"?1\", \"fields\": [\"title\", \"artist\", \"coverURL\"]}}]}}")
-    Page<AlbumDoc> searchAlbumsByKeyword(String releaseYear,String keyword, Pageable pageable);
-
-    @Query("{\"bool\": {\"must\": [{\"match\": {\"releaseYear\": \"?0\"}}, {\"multi_match\": {\"query\": \"?1\", \"fields\": [\"title\", \"artist\", \"coverURL\"]}}]}}")
+    @Query("{\"bool\": {\"must\": [{\"match\": {\"releaseYear\": \"?0\"}}, {\"bool\": {\"should\": [{\"regexp\": {\"title\": \".*?1.*\"}}, {\"regexp\": {\"artist\": \".*?1.*\"}}]}}]}}")
     Page<AlbumDoc> searchAlbumsByReleaseYearAndKeyword(String releaseYear, String keyword, Pageable pageable);
 
     @Query("{\"size\": 0, \"aggs\": {\"album_count_by_release_year\": {\"terms\": {\"field\": \"releaseYear.keyword\"}}}}")
